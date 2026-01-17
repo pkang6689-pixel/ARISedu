@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chemistry Video Rubric</title>
+  <style>
+    body {
+      font-family:'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      margin: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 6px;
+      text-align: center;
+    }
+
+    /* CHANGED: legend is now draggable + resizable */
+    #legend {
+      display: none;
+      position: fixed;   /* stays pinned to viewport */
+      top: 100px;
+      left: 100px;
+      background: white;
+      border: 2px solid #333;
+      z-index: 1000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+
+      /* ✅ Resizing enabled */
+      resize: both;
+      overflow: auto;
+
+      /* ✅ Explicit dimensions so resize handles appear */
+      width: 300px;
+      height: 200px;
+    }
+    h2 {
+    margin-bottom: 50px; /* adds space below the title */
+    }
+
+    /* CHANGED: draggable header bar */
+    #legendHeader {
+      cursor: move;
+      background: #4CAF50;
+      color: white;
+      padding: 5px;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between; /* CHANGED: space for close button */
+      align-items: center;
+    }
+
+    /* CHANGED: close button styling */
+    #closeLegend {
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 8px 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 15px;
+      position: fixed; /* stays visible when scrolling */
+      top: 60px; /* distance from top */ 
+      left: 20px; /* distance from left */ 
+      z-index: 2000; /* ensures it stays above tables/legend */
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .resize-handle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #4CAF50;
+  }
+  .resize-handle.nw { top: -5px; left: -5px; cursor: nwse-resize; }
+.resize-handle.ne { top: -5px; right: -5px; cursor: nesw-resize; }
+  .resize-handle.sw { bottom: -5px; left: -5px; cursor: nesw-resize; }
+  .resize-handle.se { bottom: -5px; right: -5px; cursor: nwse-resize; }
+  </style>
+</head>
+<body>
+
+
+  
+<!-- Movable, resizable legend -->
+<div id="legend">
+  <!-- CHANGED: header bar with close button -->
+  <div id="legendHeader">
+    <span>Legend (drag me)</span>
+    <button id="closeLegend" onclick="toggleLegend()">×</button>
+  </div>
+  <div style="padding:10px;">
+  <!-- CHANGED: four corner handles --> 
+  <div class="resize-handle nw"></div>
+  <div class="resize-handle ne"></div>
+  <div class="resize-handle sw"></div>
+  <div class="resize-handle se"></div> 
+</div>
+    <table>
+      <!-- Legend Content -->
+      <tr><th>Category</th><th>Level</th><th>Color</th></tr>
+      <!-- Difficulty-->
+      <tr><td>Difficulty</td><td>Easy</td><td style="background:#90EE90">Green</td></tr>
+      <tr><td>Difficulty</td><td>Medium-Easy</td><td style="background:#FFFFE0">Light Yellow</td></tr>
+      <tr><td>Difficulty</td><td>Medium</td><td style="background:#FFA07A">Orange</td></tr>
+      <tr><td>Difficulty</td><td>Medium-Hard</td><td style="background:#FF6347">Red-Orange</td></tr>
+      <tr><td>Difficulty</td><td>Hard</td><td style="background:#FF0000">Red</td></tr>
+      <!-- Detail --> 
+      <tr><td>Detail</td><td>Low</td><td style="background:#ADD8E6">Light Blue</td></tr> 
+      <tr><td>Detail</td><td>Medium-Low</td><td style="background:#90EE90">Greenish Blue</td></tr> 
+      <tr><td>Detail</td><td>Medium</td><td style="background:#FFD700">Yellow</td></tr> 
+      <tr><td>Detail</td><td>Medium-High</td><td style="background:#FFA500">Orange</td></tr> 
+      <tr><td>Detail</td><td>High</td><td style="background:#FF4500">Red-Orange</td></tr>
+      <!-- Length --> 
+       <tr><td>Length</td><td>Very Fast</td><td style="background:#DA70D6">Purple</td></tr>
+       <tr><td>Length</td><td>Fast</td><td style="background:#87CEEB">Blue</td></tr> 
+       <tr><td>Length</td><td>Medium-Fast</td><td style="background:#ADFF2F">Green</td></tr> 
+       <tr><td>Length</td><td>Medium</td><td style="background:#FFD700">Yellow</td></tr> 
+       <tr><td>Length</td><td>Medium-Long</td><td style="background:#FFA500">Orange</td></tr> 
+       <tr><td>Length</td><td>Long</td><td style="background:#FF4500">Red-Orange</td></tr>
+      <!-- Pace -->
+         <tr><td>Pace</td><td>Fast</td><td style="background:#87CEEB">Blue</td></tr>
+         <tr><td>Pace</td><td>Medium-Fast</td><td style="background:#ADFF2F">Light Green</td></tr>  
+         <tr><td>Pace</td><td>Medium</td><td style="background:#90EE90">Green</td></tr> 
+         <tr><td>Pace</td><td>Medium-Slow</td><td style="background:#FFD700">Yellow</td></tr> 
+         <tr><td>Pace</td><td>Slow</td><td style="background:#FF4500">Red-Orange</td></tr>
+    </table>
+  </div>
+</div>
+
+<h2>Chemistry Video Rubric</h2>
+
+<!-- Main rubric table -->
+<table>
+  <tr><th>Video Topic</th><th>Lesson</th><th>Creator</th><th>Difficulty</th><th>Detail</th><th>Length</th><th>Pace</th></tr>
+
+  <!-- States of Matter -->
+   
+  <tr><td><a href="https://www.youtube.com/watch?v=gBiF-OLUVTY" target="_blank">States of Matter</a></td><td>1.1</td><td>Khan Academy</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#ADFF2F">Medium-Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">States of Matter</a></td><td>1.1</td><td>Cognito</td>
+    <td style="background:#FFFFE0">Medium-Easy</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">States of Matter</a></td><td>1.1</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+
+  <!-- Extensive & Intensive Properties -->
+   
+  <tr><td><a href="https://www.youtube.com" target="_blank">Extensive & Intensive Properties</a></td><td>1.2</td><td>Chem Academy</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Extensive & Intensive Properties</a></td><td>1.2</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FF4500">High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Extensive & Intensive Properties</a></td><td>1.2</td><td>David Vanden Bout</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#90EE90">Medium-Low</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Extensive & Intensive Properties</a></td><td>1.2</td><td>Chemplistic</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Extensive & Intensive Properties</a></td><td>1.2</td><td>Chemistry in a Nutshell</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+
+  <!-- Density, Mass & Volume -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Density, Mass, & Volume</a></td><td>1.3</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FF6347">Medium-Hard</td>
+    <td style="background:#FF4500">High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Density, Mass, & Volume</a></td><td>1.3</td><td>Cognito</td>
+    <td style="background:#FFFFE0">Medium-Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Density, Mass, & Volume</a></td><td>1.3</td><td>Phil Mcordic</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#90EE90">Medium-Low</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Density, Mass, & Volume</a></td><td>1.3</td><td>Science Bits</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#ADD8E6">Low</td>
+    <td style="background:#DA70D6">Very Fast</td>
+    <td style="background:#87CEEB">Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Density, Mass, & Volume</a></td><td>1.3</td><td>Khan Academy</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#ADFF2F">Medium-Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+
+  <!-- Mixtures -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Heterogeneous & Homogeneous Mixtures</a></td><td>1.4</td><td>Digital Classroom Experience</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#90EE90">Medium-Low</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#ADFF2F">Medium-Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Heterogeneous & Homogeneous Mixtures</a></td><td>1.4</td><td>Khan Academy</td>
+    <td style="background:#FFFFE0">Medium-Easy</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Heterogeneous & Homogeneous Mixtures</a></td><td>1.4</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+
+  <!-- Physical & Chemical Properties -->
+
+ <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Properties</a></td><td>1.5</td><td>MooMooMath and Science</td> 
+  <td style="background:#FFFFE0">Medium-Easy</td>
+  <td style="background:#FFA500">Medium-High</td> 
+  <td style="background:#DA70D6">Very Fast</td>
+  <td style="background:#ADFF2F">Medium-Fast</td></tr> 
+ <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Properties</a></td><td>1.5</td><td>Organic Chemistry Tutor</td> 
+  <td style="background:#FFFFE0">Medium-Easy</td>
+  <td style="background:#FFA500">Medium-High</td> 
+  <td style="background:#ADFF2F">Medium-Fast</td>
+  <td style="background:#FFD700">Medium-Slow</td></tr> 
+ <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Properties</a></td>
+  <td>1.5</td><td>Chem Academy</td> 
+  <td style="background:#FFFFE0">Medium-Easy</td>
+  <td style="background:#FFD700">Medium</td> 
+  <td style="background:#87CEEB">Fast</td>
+  <td style="background:#90EE90">Medium</td></tr>
+ 
+ <!-- Physical & Chemical Changes --> 
+
+ <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Changes</a></td><td>1.6</td><td>Organic Chemistry Tutor</td> 
+  <td style="background:#FF6347">Medium-Hard</td>
+  <td style="background:#FFD700">Medium</td> 
+  <td style="background:#FFD700">Medium</td>
+  <td style="background:#FFD700">Medium-Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Changes</a></td><td>1.6</td><td>MooMooMath and Science</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#ADD8E6">Low</td>
+    <td style="background:#DA70D6">Very Fast</td>
+    <td style="background:#ADFF2F">Medium-Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Changes</a></td><td>1.6</td><td>Khan Academy</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Physical & Chemical Changes</a></td><td>1.6</td><td>Chem Academy</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#ADFF2F">Medium-Fast</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+
+  <!-- Scientific Notation -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Scientific Notation</a></td><td>2.1</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FFFFE0">Medium-Easy</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#90EE90">Medium</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Scientific Notation</a></td><td>2.1</td><td>Veritasium</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#ADFF2F">Medium-Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Scientific Notation</a></td><td>2.1</td><td>Khan Academy</td>
+    <td style="background:#FF6347">Medium-Hard</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#FF4500">Long</td>
+    <td style="background:#90EE90">Medium</td></tr>
+
+  <!-- Significant Figures -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Significant Figures</a></td><td>2.2</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Significant Figures</a></td><td>2.2</td>
+    <td>Professor Dave Explains</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#87CEEB">Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Significant Figures</a></td><td>2.2</td><td>Khan Academy</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#ADFF2F">Medium-Fast</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Significant Figures</a></td><td>2.2</td><td>Cognito</td>
+    <td style="background:#90EE90">Easy</td>
+    <td style="background:#90EE90">Low</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#90EE90">Medium</td></tr>
+
+  <!-- Metric System -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Metric System</a></td><td>2.3</td><td>Chem Academy</td>
+    <td style="background:#FF6347">Medium-Hard</td>
+    <td style="background:#FF4500">High</td>
+    <td style="background:#FFD700">Medium</td>
+    <td style="background:#FF4500">Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Metric System</a></td><td>2.3 & 2.4</td><td>Organic Chemistry Tutor</td>
+    <td style="background:#FF6347">Medium-Hard</td>
+    <td style="background:#FF4500">High</td>
+    <td style="background:#FF4500">Long</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Metric System</a></td><td>2.3</td><td>MooMooMath and Science</td>
+    <td style="background:#FFA07A">Medium</td>
+    <td style="background:#FFA500">Medium-High</td>
+    <td style="background:#87CEEB">Fast</td>
+    <td style="background:#FFD700">Medium-Slow</td></tr>
+
+  <!-- Unit Conversions -->
+
+  <tr><td><a href="https://www.youtube.com" target="_blank">Unit Conversions</a></td><td>2.4</td><td>Chem Academy</td>
+      <td style="background:#FFFFE0">Medium-Easy</td>
+      <td style="background:#FFA500">Medium-High</td>
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#FFD700">Medium-Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Unit Conversions</a></td><td>2.4</td><td>Organic Chemistry Tutor</td>
+      <td style="background:#FFFFE0">Medium-Easy</td>
+      <td style="background:#FF4500">High</td>
+      <td style="background:#FF4500">Long</td>
+      <td style="background:#FF4500">Slow</td></tr>
+  <tr><td><a href="https://www.youtube.com" target="_blank">Unit Conversions</a></td><td>2.4</td><td>Ketzbook</td>
+      <td style="background:#90EE90">Easy</td>
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#87CEEB">Fast</td>
+      <td style="background:#ADFF2F">Medium-Fast</td></tr>
+
+  <!-- Protons, Neutrons, & Electrons -->
+
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Khan Academy</td>
+      <td style="background:#90EE90">Easy</td>
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#DA70D6">Very Fast</td>
+      <td style="background:#90EE90">Medium</td></tr>
+      <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>2 Minute Classroom</td> 
+      <td style="background:#90EE90">Easy</td>
+      <td style="background:#FFD700">Medium</td> 
+      <td style="background:#DA70D6">Very Fast</td>
+      <td style="background:#87CEEB">Fast</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Learn Bright</td> 
+      <td style="background:#90EE90">Easy</td>
+      <td style="background:#FFD700">Medium</td> 
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#90EE90">Medium</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>MooMooMath and Science</td> 
+      <td style="background:#FFFFE0">Medium-Easy</td>
+      <td style="background:#FFA500">Medium-High</td> 
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#ADFF2F">Medium-Fast</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Tidlybit</td> 
+      <td style="background:#FFA07A">Medium</td>
+      <td style="background:#FF4500">High</td> 
+      <td style="background:#FFA500">Medium-Long</td>
+      <td style="background:#FFD700">Medium-Slow</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Learn Bright</td> 
+      <td style="background:#90EE90">Easy</td>
+      <td style="background:#ADD8E6">Low</td> 
+      <td style="background:#87CEEB">Fast</td>
+      <td style="background:#87CEEB">Fast</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>RicochetScience</td> 
+      <td style="background:#FFFFE0">Medium-Easy</td>
+      <td style="background:#FFD700">Medium</td> 
+      <td style="background:#DA70D6">Very Fast</td>
+      <td style="background:#87CEEB">Fast</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Whats Up Dude</td> 
+      <td style="background:#FFA07A">Medium</td>
+      <td style="background:#FF4500">High</td> 
+      <td style="background:#FFA500">Medium-Long</td>
+      <td style="background:#FFD700">Medium-Slow</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>FuseSchool</td> 
+      <td style="background:#FFFFE0">Medium-Easy</td>
+      <td style="background:#FFA500">Medium-High</td> 
+      <td style="background:#FFD700">Medium</td>
+      <td style="background:#90EE90">Medium</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Tyler DeWitt</td> 
+      <td style="background:#FFA07A">Medium</td>
+      <td style="background:#FF4500">High</td> 
+      <td style="background:#FFA500">Medium-Long</td>
+      <td style="background:#FFD700">Medium-Slow</td></tr> 
+    <tr><td><a href="https://www.youtube.com" target="_blank">Protons, Neutrons, & Electrons</a></td><td>3.1</td><td>Organic Chemistry Tutor</td> 
+      <td style="background:#FF6347">Medium-Hard</td>
+      <td style="background:#FF4500">High</td> 
+      <td style="background:#FFA500">Medium-Long</td>
+      <td style="background:#FFD700">Medium-Slow</td></tr>
+</table>
+
+<button id="legendButton" onclick="toggleLegend()">Show Legend</button>
+
+
+
+
+<script>
+function toggleLegend() {
+  var legend = document.getElementById("legend");
+  var button = document.getElementById("legendButton");
+  if (legend.style.display === "none") {
+    legend.style.display = "block";
+    button.textContent = "Hide Legend";
+  } else {
+    legend.style.display = "none";
+    button.textContent = "Show Legend";
+  }
+}
+
+// CHANGED: Dragging functionality
+dragElement(document.getElementById("legend"));
+
+function dragElement(elmnt) {
+  var header = document.getElementById("legendHeader");
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (header) {
+    header.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+// Resizing from corners
+const legend = document.getElementById("legend");
+document.querySelectorAll(".resize-handle").forEach(handle => {
+  handle.addEventListener("mousedown", initResize);
+});
+
+function initResize(e) {
+  e.preventDefault();
+  const handle = e.target;
+  const startX = e.clientX;
+  const startY = e.clientY;
+  const startWidth = legend.offsetWidth;
+  const startHeight = legend.offsetHeight;
+  const startTop = legend.offsetTop;
+  const startLeft = legend.offsetLeft;
+
+  document.onmouseup = stopResize;
+  document.onmousemove = resize;
+
+  function resize(ev) {
+    let newWidth = startWidth;
+    let newHeight = startHeight;
+    let newTop = startTop;
+    let newLeft = startLeft;
+
+    if (handle.classList.contains("se")) {
+      newWidth = startWidth + (ev.clientX - startX);
+      newHeight = startHeight + (ev.clientY - startY);
+    } else if (handle.classList.contains("sw")) {
+      newWidth = startWidth - (ev.clientX - startX);
+      newLeft = startLeft + (ev.clientX - startX);
+      newHeight = startHeight + (ev.clientY - startY);
+    } else if (handle.classList.contains("ne")) {
+      newWidth = startWidth + (ev.clientX - startX);
+      newHeight = startHeight - (ev.clientY - startY);
+      newTop = startTop + (ev.clientY - startY);
+    } else if (handle.classList.contains("nw")) {
+      newWidth = startWidth - (ev.clientX - startX);
+      newLeft = startLeft + (ev.clientX - startX);
+      newHeight = startHeight - (ev.clientY - startY);
+      newTop = startTop + (ev.clientY - startY);
+    }
+
+    if (newWidth > 100) { legend.style.width = newWidth + "px"; legend.style.left = newLeft + "px"; }
+    if (newHeight > 100) { legend.style.height = newHeight + "px"; legend.style.top = newTop + "px"; }
+  }
+
+  function stopResize() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+</script>
+
+</body>
+</html>
